@@ -51,7 +51,7 @@ class ListAlbumViewModelTest {
     }
 
     @Test
-    fun `Get album with success`() {
+    fun `Get albums list with success`() {
         // GIVEN -> Preparation
         val listAlbums = listOf(
                 MockedObjects.domainFirstAlbum,
@@ -72,7 +72,7 @@ class ListAlbumViewModelTest {
     }
 
     @Test
-    fun `Get album with Error`() {
+    fun `Get albums List with Error`() {
         // GIVEN -> Preparation
 
         Mockito.`when`(usecase.execute())
