@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">LeboncoinAlbums</string>
+    <string name="title_albums">Album List</string>
+    <string name="title_album_detail">Album Detail</string>
+    <string name="album_id_text">Album ID :</string>
+    <string name="album_title_text">Album Title :</string>
+
+    <string name="error">ERROR</string>
+    <string name="ok">OK</string>
+</resources>
