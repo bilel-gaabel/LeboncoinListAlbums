@@ -1,27 +1,21 @@
 package com.billgaag.leboncoinalbums.ui.albums
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.billgaag.leboncoinalbums.R
 import com.billgaag.leboncoinalbums.ui.albums.list.ListAlbumFragment
-import com.billgaag.leboncoinalbums.ui.list.AlbumDetailFragment
-import dagger.android.support.DaggerAppCompatActivity
-import javax.inject.Inject
 
-class ListAlbumActivity : DaggerAppCompatActivity() {
-
-    @Inject
-    lateinit var listAlbumFragment: ListAlbumFragment
-
-    @Inject
-    lateinit var albumFragment: AlbumDetailFragment
+class ListAlbumActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.albums_activity)
 
         if (savedInstanceState == null) {
+            val listAlbumFragment = ListAlbumFragment.newInstance(this)
+
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, listAlbumFragment, listAlbumFragment.javaClass.name)
+                .replace(R.id.container, listAlbumFragment)
                     .commitNow()
         }
     }

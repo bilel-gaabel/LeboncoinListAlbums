@@ -1,7 +1,6 @@
 package com.billgaag.leboncoinalbums.di.component
 
 import android.app.Application
-import com.billgaag.leboncoinalbums.di.module.ActivityBuilder
 import com.billgaag.leboncoinalbums.di.module.AppModule
 import com.billgaag.leboncoinalbums.di.module.FragmentBuilder
 import com.billgaag.leboncoinalbums.di.scope.AppScope
@@ -13,7 +12,7 @@ import dagger.android.support.AndroidSupportInjectionModule
 
 @AppScope
 @Component(
-        modules = [AndroidSupportInjectionModule::class, AppModule::class, ActivityBuilder::class, FragmentBuilder::class],
+    modules = [AndroidSupportInjectionModule::class, AppModule::class, FragmentBuilder::class],
         dependencies = [DataComponent::class]
 )
 interface AppComponent : AndroidInjector<DaggerApplication> {

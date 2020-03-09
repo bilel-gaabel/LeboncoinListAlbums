@@ -1,11 +1,15 @@
 package com.billgaag.leboncoinalbums.ui.list
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.billgaag.leboncoin.domain.model.Album
 import com.billgaag.leboncoinalbums.R
 import com.billgaag.leboncoinalbums.utils.Result
@@ -15,17 +19,38 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.album_detail_fragment.*
 import javax.inject.Inject
 
-class AlbumDetailFragment
-@Inject
-constructor(
-        private val viewModel: AlbumDetailViewModel
-) : DaggerFragment() {
+class AlbumDetailFragment : DaggerFragment() {
 
-    var selectedAlbumId: Int = 0
+    @Inject
+    lateinit var vmFactory: ViewModelProvider.Factory
+
+    lateinit var viewModel: AlbumDetailViewModel
+
+    companion object {
+        private const val ALBUM_ID_ARG = "ALBUM_ID_ARG"
+
+        fun newInstance(activity: Activity, albumId: Int): Fragment {
+            return FragmentFactory.loadFragmentClass(
+                activity.classLoader,
+                AlbumDetailFragment::class.java.name
+            )
+                .newInstance()
+                .apply {
+                    arguments = Bundle().apply { putInt(ALBUM_ID_ARG, albumId) }
+                }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider(this, vmFactory).get(AlbumDetailViewModel::class.java)
+
+    }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         return inflater.inflate(R.layout.album_detail_fragment, container, false)
     }
@@ -34,11 +59,15 @@ constructor(
         super.onViewCreated(view, savedInstanceState)
 
         (activity as AppCompatActivity).supportActionBar?.title =
-                getString(R.string.title_album_detail)
+            getString(R.string.title_album_detail)
 
         configureViewModel()
 
-        viewModel.getAlbum(selectedAlbumId)
+        if (savedInstanceState == null) {
+            val selectedAlbumId = arguments?.getInt(ALBUM_ID_ARG) ?: 0
+
+            viewModel.getAlbum(selectedAlbumId)
+        }
     }
 
     private fun configureViewModel() {
@@ -82,4 +111,5 @@ constructor(
         albumTitle.text = album.title
         albumImage.setImageUrl(album.url)
     }
+
 }

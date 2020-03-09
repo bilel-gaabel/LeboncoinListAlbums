@@ -1,11 +1,15 @@
 package com.billgaag.leboncoinalbums.ui.albums.list
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.billgaag.leboncoinalbums.R
 import com.billgaag.leboncoinalbums.ui.list.AlbumDetailFragment
@@ -17,16 +21,31 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.list_albums_fragment.*
 import javax.inject.Inject
 
-class ListAlbumFragment
-@Inject
-constructor(
-        private val viewModel: ListAlbumViewModel
-) : DaggerFragment() {
+class ListAlbumFragment : DaggerFragment() {
 
     @Inject
-    lateinit var albumFragment: AlbumDetailFragment
+    lateinit var vmFactory: ViewModelProvider.Factory
 
-    private val adapter by lazy { AlbumAdapter() }
+    lateinit var viewModel: ListAlbumViewModel
+
+    private val adapter = AlbumAdapter()
+
+    companion object {
+
+        fun newInstance(activity: Activity): Fragment {
+            return FragmentFactory.loadFragmentClass(
+                activity.classLoader,
+                ListAlbumFragment::class.java.name
+            )
+                .newInstance()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider(this, vmFactory).get(ListAlbumViewModel::class.java)
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +62,8 @@ constructor(
         initViews()
         configureViewModel()
 
-        viewModel.getListAlbum()
+        if (savedInstanceState == null)
+            viewModel.getListAlbum()
     }
 
     private fun initViews() {
@@ -86,10 +106,10 @@ constructor(
 
     private fun goToDetailAlbum(idAlbum: Int) {
         activity?.let {
-            albumFragment.selectedAlbumId = idAlbum
+            val albumFragment = AlbumDetailFragment.newInstance(it, idAlbum)
 
             it.supportFragmentManager.beginTransaction()
-                    .add(R.id.container, albumFragment, albumFragment.javaClass.name)
+                .add(R.id.container, albumFragment)
                     .commitNow()
         }
     }

@@ -17,7 +17,7 @@ import javax.inject.Inject
 class ListAlbumViewModel
 @Inject
 constructor(
-        private val loadListAlbumsUseCase: LoadListAlbumsUseCase
+    private val loadListAlbumsUseCase: LoadListAlbumsUseCase
 ) : ViewModel() {
 
     private lateinit var allAlbumList: List<Album>
